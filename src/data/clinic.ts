@@ -1,0 +1,17 @@
+import type { Lang } from '../i18n/langs';
+type T = Record<Lang, string>;
+
+export const services: { id: string; price: string; name: T; text: T }[] = [
+  { id: 'implant', price: '180 000', name: { ru: 'Имплантация', uz: 'Implantatsiya', kk: 'Имплантация', en: 'Implants', ar: 'زراعة الأسنان' }, text: { ru: 'Straumann и Osstem, 3D-план, гарантия 10 лет', uz: 'Straumann va Osstem, 3D reja, 10 yil kafolat', kk: 'Straumann және Osstem, 3D жоспар, 10 жыл кепілдік', en: 'Straumann and Osstem, 3D plan, 10-year warranty', ar: 'شتراومان وأوستيم، خطة ثلاثية الأبعاد، ضمان 10 سنوات' } },
+  { id: 'whitening', price: '60 000', name: { ru: 'Отбеливание', uz: 'Oqartirish', kk: 'Ағарту', en: 'Whitening', ar: 'تبييض الأسنان' }, text: { ru: 'До 8 тонов за один визит, без чувствительности', uz: 'Bir tashrifda 8 tongacha, sezuvchanliksiz', kk: 'Бір келуде 8 реңкке дейін, сезімталдықсыз', en: 'Up to 8 shades in one visit, no sensitivity', ar: 'حتى 8 درجات في زيارة واحدة دون حساسية' } },
+  { id: 'veneers', price: '150 000', name: { ru: 'Виниры', uz: 'Vinirlar', kk: 'Винирлер', en: 'Veneers', ar: 'القشور الخزفية' }, text: { ru: 'Керамика E.max, цифровой дизайн улыбки', uz: 'E.max keramika, tabassumning raqamli dizayni', kk: 'E.max керамика, күлкінің цифрлық дизайны', en: 'E.max ceramic, digital smile design', ar: 'سيراميك E.max وتصميم رقمي للابتسامة' } },
+  { id: 'cleaning', price: '15 000', name: { ru: 'Гигиена', uz: 'Gigiyena', kk: 'Гигиена', en: 'Hygiene', ar: 'تنظيف الأسنان' }, text: { ru: 'Ультразвук, Air Flow, полировка', uz: 'Ultratovush, Air Flow, sayqallash', kk: 'Ультрадыбыс, Air Flow, жылтырату', en: 'Ultrasonic, Air Flow, polishing', ar: 'الموجات فوق الصوتية وAir Flow والتلميع' } },
+  { id: 'kids', price: '10 000', name: { ru: 'Детям', uz: 'Bolalarga', kk: 'Балаларға', en: 'Children', ar: 'للأطفال' }, text: { ru: 'Первый визит в игровой форме', uz: 'Birinchi tashrif o‘yin tarzida', kk: 'Алғашқы келу ойын түрінде', en: 'A first visit that feels like play', ar: 'زيارة أولى على شكل لعبة' } },
+  { id: 'ortho', price: '450 000', name: { ru: 'Элайнеры', uz: 'Elaynerlar', kk: 'Элайнерлер', en: 'Aligners', ar: 'التقويم الشفاف' }, text: { ru: 'Прозрачные капы, результат виден в 3D до начала', uz: 'Shaffof kapalar, natija boshlanishidan oldin 3D da', kk: 'Мөлдір капалар, нәтиже басталмай тұрып 3D-да', en: 'Clear trays, see the result in 3D before you start', ar: 'قوالب شفافة، ترى النتيجة ثلاثية الأبعاد قبل البدء' } },
+];
+
+export const doctors: { id: number; name: T; role: T; years: number; langs: string; slot: string }[] = [
+  { id: 1, years: 14, langs: 'RU · KZ · EN', slot: '16:30', name: { ru: 'Данияр Ахметов', uz: 'Daniyar Axmetov', kk: 'Данияр Ахметов', en: 'Daniyar Akhmetov', ar: 'دانيار أحمدوف' }, role: { ru: 'Хирург-имплантолог', uz: 'Jarroh-implantolog', kk: 'Хирург-имплантолог', en: 'Implant surgeon', ar: 'جراح زراعة الأسنان' } },
+  { id: 2, years: 10, langs: 'RU · KZ · TR', slot: '11:00', name: { ru: 'Айгерим Сапарова', uz: 'Aygerim Saparova', kk: 'Әйгерім Сапарова', en: 'Aigerim Saparova', ar: 'آيغريم ساباروفا' }, role: { ru: 'Эстетическая стоматология', uz: 'Estetik stomatologiya', kk: 'Эстетикалық стоматология', en: 'Aesthetic dentistry', ar: 'طب الأسنان التجميلي' } },
+  { id: 3, years: 7, langs: 'RU · KZ · UZ', slot: '14:15', name: { ru: 'Мадина Ержанова', uz: 'Madina Yerjanova', kk: 'Мадина Ержанова', en: 'Madina Yerzhanova', ar: 'مادينا يرجانوفا' }, role: { ru: 'Детский стоматолог', uz: 'Bolalar stomatologi', kk: 'Балалар стоматологы', en: 'Paediatric dentist', ar: 'طبيبة أسنان الأطفال' } },
+];

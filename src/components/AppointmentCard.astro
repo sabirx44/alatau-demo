@@ -1,0 +1,107 @@
+---
+// Appointment card: opens after booking, with the details and a QR for reception.
+// Can be saved as an image or added to the calendar.
+import type { UI } from "../i18n/ui";
+interface Props { t: UI["book"]; address: string; locale: string }
+const { t, address, locale } = Astro.props;
+---
+<dialog id="invite" class="invite" data-address={address} data-locale={locale} data-title={t.ticketTitle}>
+  <div class="invite-stage">
+    <article class="invite-card" id="invite-card">
+      <div class="invite-top">
+        <div class="flex items-center justify-between">
+          <span class="text-[18px] font-medium tracking-[-0.02em]">Alatau Smile</span>
+          <span class="num text-[12px] tracking-[.1em] opacity-70" data-i="code"></span>
+        </div>
+        <div class="invite-mirror" aria-hidden="true"></div>
+        <p class="mt-8 text-[13px] font-medium opacity-75">{t.ticket}</p>
+        <h2 class="mt-1 text-[36px] font-light leading-none tracking-[-0.04em]">{t.ticketTitle}</h2>
+      </div>
+      <div class="invite-body">
+        <dl class="grid grid-cols-2 gap-x-4 gap-y-4" data-i="rows"></dl>
+        <div class="mt-6 flex items-end justify-between gap-4 border-t border-line pt-5">
+          <p class="max-w-[17ch] text-[12px] leading-snug text-slate">{t.note}<br />{address}</p>
+          <img data-i="qr" alt="QR" width="104" height="104" class="size-26 rounded-xl" />
+        </div>
+      </div>
+    </article>
+    <div class="flex flex-wrap justify-center gap-2.5">
+      <button type="button" class="btn btn-coral" data-act="save">{t.save}</button>
+      <button type="button" class="btn btn-line" data-act="ics">{t.calendar}</button>
+      <button type="button" class="btn btn-line" data-act="close">{t.close}</button>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  .invite { background: transparent; border: 0; padding: 0; margin: 0; width: 100%; height: 100%; max-width: 100vw; max-height: 100dvh; color: var(--color-ink); }
+  .invite::backdrop { background: rgba(12, 26, 43, .45); backdrop-filter: blur(12px); }
+  .invite-stage { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px 16px; perspective: 1400px; }
+  .invite-card { width: min(370px, 100%); border-radius: 30px; overflow: hidden; background: var(--color-paper); box-shadow: 0 50px 90px -30px rgba(12,26,43,.5); }
+  .invite-top { position: relative; overflow: hidden; padding: 24px 24px 26px; background: var(--color-coral); color: #fff; }
+  .invite-mirror { position: absolute; inset-inline-end: -46px; top: -30px; width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(255,255,255,.08) 60%); box-shadow: 0 0 0 6px rgba(255,255,255,.35); }
+  .invite-body { padding: 22px 24px 24px; }
+  .invite-body dt { font-size: 12px; color: var(--color-slate); }
+  .invite-body dd { margin: 2px 0 0; font-size: 16px; font-weight: 500; }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import QRCode from 'qrcode';
+  import { toPng } from 'html-to-image';
+
+  const d = document.getElementById('invite') as HTMLDialogElement | null;
+  let state: { code: string; date?: string; time?: string } | null = null;
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  function save(href: string, name: string) {
+    const a = document.createElement('a');
+    a.href = href; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  document.querySelectorAll<HTMLFormElement>('form[data-invite]').forEach((form) => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!d) return;
+      let ok = true;
+      form.querySelectorAll<HTMLInputElement>('[required]').forEach((f) => {
+        const bad = !f.value.trim() || (f.type === 'tel' && f.value.replace(/\D/g, '').length < 7);
+        f.setAttribute('aria-invalid', String(bad));
+        if (bad && ok) { f.focus(); ok = false; }
+      });
+      if (!ok) return;
+      const rows: string[] = [];
+      form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-label]').forEach((f) => {
+        let v = f instanceof HTMLSelectElement ? f.selectedOptions[0]?.textContent || f.value : f.value;
+        if (f.type === 'date' && v) v = new Date(v + 'T00:00').toLocaleDateString(d.dataset.locale, { day: 'numeric', month: 'long' });
+        if (v) rows.push(`<div><dt>${esc(f.dataset.label!)}</dt><dd>${esc(v)}</dd></div>`);
+      });
+      const code = `AS-${Math.floor(1000 + Math.random() * 9000)}`;
+      state = { code, date: (form.elements.namedItem('date') as HTMLInputElement)?.value, time: (form.elements.namedItem('time') as HTMLSelectElement)?.value };
+      d.querySelector('[data-i="code"]')!.textContent = code;
+      d.querySelector('[data-i="rows"]')!.innerHTML = rows.join('');
+      (d.querySelector('[data-i="qr"]') as HTMLImageElement).src = await QRCode.toDataURL(`${location.origin}/checkin/${code}`, { margin: 0, width: 220, color: { dark: '#0C1A2B', light: '#FFFFFF' } });
+      d.showModal();
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.fromTo('#invite-card', { y: 140, rotateX: 50, rotateZ: 5, opacity: 0 }, { y: 0, rotateX: 0, rotateZ: 0, opacity: 1, duration: 1.3, ease: 'expo.out' });
+        gsap.fromTo('.invite-mirror', { scale: 0.3 }, { scale: 1, duration: 1.6, ease: 'expo.out' });
+      }
+      form.reset();
+    });
+  });
+
+  d?.addEventListener('click', async (e) => {
+    if (e.target === d) return d.close();
+    const act = (e.target as HTMLElement).closest<HTMLElement>('[data-act]')?.dataset.act;
+    if (!act || !state) return;
+    if (act === 'close') d.close();
+    if (act === 'save') save(await toPng(document.getElementById('invite-card')!, { pixelRatio: 3 }), `${state.code}.png`);
+    if (act === 'ics' && state.date) {
+      const [y, m, day] = state.date.split('-').map(Number);
+      const [hh, mm] = (state.time || '10:00').split(':').map(Number);
+      const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//esanov//alatau//RU', 'BEGIN:VEVENT', `UID:${state.code}@alatau`, `DTSTART:${y}${pad(m)}${pad(day)}T${pad(hh)}${pad(mm)}00`, 'DURATION:PT1H', `SUMMARY:Alatau Smile · ${d.dataset.title}`, `LOCATION:${d.dataset.address}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+      save(URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), `${state.code}.ics`);
+    }
+  });
+</script>

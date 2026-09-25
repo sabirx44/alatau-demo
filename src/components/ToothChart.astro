@@ -1,0 +1,78 @@
+---
+// Tappable dental chart in FDI numbering, drawn as two arches in mirror view
+// (the patient's left is on the left of the screen). Selection is handled by the page script.
+import type { Lang } from '../i18n/langs';
+interface Props { lang: Lang; t: { title: string; mirror: string; left: string; right: string } }
+const { lang, t } = Astro.props;
+
+const Q: Record<Lang, Record<number, string>> = {
+  ru: { 1: 'верхний правый', 2: 'верхний левый', 3: 'нижний левый', 4: 'нижний правый' },
+  uz: { 1: 'yuqori o‘ng', 2: 'yuqori chap', 3: 'pastki chap', 4: 'pastki o‘ng' },
+  kk: { 1: 'жоғарғы оң', 2: 'жоғарғы сол', 3: 'төменгі сол', 4: 'төменгі оң' },
+  en: { 1: 'upper right', 2: 'upper left', 3: 'lower left', 4: 'lower right' },
+  ar: { 1: 'العلوي الأيمن', 2: 'العلوي الأيسر', 3: 'السفلي الأيسر', 4: 'السفلي الأيمن' },
+};
+const N: Record<Lang, string[]> = {
+  ru: ['центральный резец', 'боковой резец', 'клык', 'первый премоляр', 'второй премоляр', 'первый моляр', 'второй моляр', 'зуб мудрости'],
+  uz: ['markaziy kesuvchi', 'yon kesuvchi', 'qoziq tish', 'birinchi kichik oziq', 'ikkinchi kichik oziq', 'birinchi oziq tish', 'ikkinchi oziq tish', 'aql tishi'],
+  kk: ['орталық күрек тіс', 'бүйір күрек тіс', 'сүйір тіс', 'бірінші кіші азу', 'екінші кіші азу', 'бірінші азу тіс', 'екінші азу тіс', 'ақыл тіс'],
+  en: ['central incisor', 'lateral incisor', 'canine', 'first premolar', 'second premolar', 'first molar', 'second molar', 'wisdom tooth'],
+  ar: ['القاطع المركزي', 'القاطع الجانبي', 'الناب', 'الضاحك الأول', 'الضاحك الثاني', 'الرحى الأولى', 'الرحى الثانية', 'ضرس العقل'],
+};
+const name = (n: number) => `${Q[lang][Math.floor(n / 10)]}, ${N[lang][(n % 10) - 1]}`;
+
+const W: Record<number, number> = { 1: 21, 2: 18, 3: 20, 4: 21, 5: 21, 6: 28, 7: 27, 8: 24 };
+const D: Record<number, number> = { 1: 12, 2: 12, 3: 15, 4: 16, 5: 16, 6: 20, 7: 19, 8: 18 };
+const cx = 180, rx = 136, ry = 146;
+const jaws = [
+  { order: [28, 27, 26, 25, 24, 23, 22, 21, 11, 12, 13, 14, 15, 16, 17, 18], cy: 198, dir: -1 },
+  { order: [38, 37, 36, 35, 34, 33, 32, 31, 41, 42, 43, 44, 45, 46, 47, 48], cy: 232, dir: 1 },
+];
+const f = (n: number) => Math.round(n * 10) / 10;
+const teeth: { num: number; x: number; y: number; w: number; d: number; a: number; lx: number; ly: number }[] = [];
+for (const jaw of jaws) {
+  const total = jaw.order.reduce((s, n) => s + W[n % 10] + 3, -3);
+  let cum = 0;
+  for (const num of jaw.order) {
+    const w = W[num % 10], d = D[num % 10];
+    const tt = (cum + w / 2) / total;
+    cum += w + 3;
+    const th = Math.PI * (1 - (0.03 + tt * 0.94));
+    teeth.push({
+      num, w, d,
+      x: f(cx + rx * Math.cos(th)), y: f(jaw.cy + jaw.dir * ry * Math.sin(th)),
+      a: f((Math.atan2(jaw.dir * -ry * Math.cos(th), rx * Math.sin(th)) * 180) / Math.PI),
+      lx: f(cx + (rx + 21) * Math.cos(th)), ly: f(jaw.cy + jaw.dir * (ry + 21) * Math.sin(th) + 3),
+    });
+  }
+}
+---
+<div class="chart-wrap" dir="ltr">
+  <svg viewBox="0 12 360 406" class="chart h-auto w-full" role="group" aria-label={t.title}>
+    <text class="side" x="6" y="219">{t.left}</text>
+    <text class="side" x="354" y="219" text-anchor="end">{t.right}</text>
+    {teeth.map((th) => (
+      <g class="tooth" data-tooth={th.num} data-name={name(th.num)} role="button" tabindex="0" aria-pressed="false" aria-label={`${th.num}, ${name(th.num)}`}>
+        <circle cx={th.x} cy={th.y} r="15" class="hit" />
+        <rect x={-th.w / 2} y={-th.d / 2} width={th.w} height={th.d} rx={f(Math.min(th.w, th.d) * 0.42)} transform={`translate(${th.x} ${th.y}) rotate(${th.a})`} />
+        <text x={th.lx} y={th.ly} text-anchor="middle">{th.num}</text>
+      </g>
+    ))}
+    <text id="chart-num" x="180" y="214" text-anchor="middle"></text>
+    <text class="mirror-label" x="180" y="252" text-anchor="middle">{t.mirror}</text>
+  </svg>
+</div>
+
+<style>
+  .chart { font-family: var(--font-sans); }
+  .tooth { cursor: pointer; outline: none; }
+  .tooth .hit { fill: #000; fill-opacity: 0; }
+  .tooth rect { fill: var(--color-paper); stroke: var(--color-ink); stroke-width: 1.3; transition: fill .2s, stroke .2s; }
+  .tooth text { font-size: 9px; fill: var(--color-slate); }
+  .tooth:hover rect { fill: var(--color-glacier); }
+  .tooth:focus-visible rect { stroke: var(--color-coral); stroke-width: 2.4; }
+  .tooth[aria-pressed="true"] rect { fill: var(--color-coral); stroke: var(--color-coral-deep); }
+  .tooth[aria-pressed="true"] text { fill: var(--color-coral); font-weight: 600; font-size: 11px; }
+  .side, .mirror-label { font-size: 10px; fill: var(--color-slate); letter-spacing: .08em; text-transform: uppercase; }
+  #chart-num { font-size: 56px; font-weight: 300; fill: var(--color-coral); letter-spacing: -0.04em; }
+</style>

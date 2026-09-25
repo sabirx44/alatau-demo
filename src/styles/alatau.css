@@ -1,0 +1,81 @@
+/*
+  Alatau Smile identity: calm clinical light.
+  World: snow on the Alatau range above Almaty, porcelain, the dentist's round mirror.
+  Snow and glacier surfaces, deep navy ink, coral as the single action color.
+*/
+@import "tailwindcss";
+@import "@fontsource-variable/rubik/wght.css";
+
+@theme {
+  --color-snow: #F4F7F9;
+  --color-paper: #FFFFFF;
+  --color-glacier: #D6E7F0;
+  --color-glacier-deep: #A9CADB;
+  --color-ink: #0C1A2B;
+  --color-slate: #58697B;
+  --color-coral: #E4523C;
+  --color-coral-deep: #C23E2A;
+  --color-line: rgba(12, 26, 43, 0.1);
+  --font-sans: "Rubik Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root { color-scheme: light; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+
+@layer base {
+  html { background: var(--color-snow); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; }
+  h1, h2, h3 { text-wrap: balance; font-weight: 400; }
+  :focus-visible { outline: 2px solid var(--color-coral); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--color-coral); color: #fff; }
+  img { display: block; max-width: 100%; }
+}
+
+@layer components {
+  .d-hero { font-size: clamp(52px, 8.4vw, 138px); line-height: 0.92; letter-spacing: -0.045em; font-weight: 300; }
+  .d-xl { font-size: clamp(38px, 5.4vw, 84px); line-height: 0.98; letter-spacing: -0.04em; font-weight: 300; }
+  .d-l { font-size: clamp(26px, 2.6vw, 38px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 400; }
+  html[dir="rtl"] .d-hero, html[dir="rtl"] .d-xl, html[dir="rtl"] .d-l { letter-spacing: 0; line-height: 1.15; }
+  .eyebrow { font-size: 13px; font-weight: 500; color: var(--color-slate); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 28px;
+    border-radius: 999px; font-weight: 500; font-size: 16px; white-space: nowrap;
+    transition: background-color .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .btn-coral { background: var(--color-coral); color: #fff; }
+  .btn-coral:hover { background: var(--color-coral-deep); }
+  .btn-line { box-shadow: inset 0 0 0 1.5px var(--color-line); color: var(--color-ink); background: var(--color-paper); }
+  .btn-line:hover { box-shadow: inset 0 0 0 1.5px var(--color-ink); }
+  .btn svg { width: 16px; height: 16px; }
+  html[dir="rtl"] .btn svg.dir { transform: scaleX(-1); }
+
+  .card { background: var(--color-paper); border-radius: 28px; overflow: hidden; position: relative; }
+
+  .input {
+    height: 56px; width: 100%; padding-inline: 20px; border-radius: 16px; font: inherit; font-size: 16px;
+    background: var(--color-snow); border: 1.5px solid transparent; color: var(--color-ink); appearance: none; transition: border-color .2s;
+  }
+  .input:focus { outline: none; border-color: var(--color-ink); }
+  .input[aria-invalid="true"] { border-color: var(--color-coral); }
+
+  /* Dentist's mirror: a round lens on a thin handle */
+  .mirror { position: absolute; top: 0; left: 0; width: var(--m, 190px); height: var(--m, 190px); pointer-events: none; z-index: 5; will-change: transform; }
+  .mirror-lens { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 6px #E9EEF2, 0 0 0 7px rgba(12,26,43,.25), 0 30px 60px -20px rgba(12,26,43,.55); }
+  .mirror-lens img { position: absolute; max-width: none; object-fit: cover; }
+  .mirror-handle { position: absolute; width: 10px; height: 150px; left: calc(50% - 5px); top: 100%; transform-origin: 50% -95px; transform: rotate(-38deg) translateY(4px); border-radius: 6px; background: linear-gradient(90deg, #C9D3DB, #F4F7F9 45%, #9FAEBA); box-shadow: 0 10px 20px -8px rgba(12,26,43,.4); }
+  .mirror-tag { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; background: rgba(255,255,255,.9); color: var(--color-ink); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .before { filter: sepia(.38) saturate(1.15) hue-rotate(-8deg) brightness(.96); }
+
+  .photo-ph { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 12px; background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(12,26,43,.04) 14px 15px), var(--color-glacier); font-size: 12px; color: var(--color-slate); }
+  .photo-ph span { background: var(--color-paper); padding: 4px 9px; border-radius: 999px; }
+}
+
+.js [data-reveal] { opacity: 0; transform: translateY(26px); }
+.js [data-split] { visibility: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; }
+  .js [data-split] { visibility: visible; }
+}
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
