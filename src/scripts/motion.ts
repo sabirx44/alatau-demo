@@ -2,12 +2,16 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
+import { initKit } from './kit';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 // ?qa disables motion so full-page review screenshots show every section at rest
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches || new URLSearchParams(location.search).has('qa');
 const rtl = document.documentElement.dir === 'rtl';
+
+const preDelay = !reduced && document.querySelector('[data-preloader]') ? 1.5 : 0;
+initKit({ reduced });
 
 if (reduced) {
   document.documentElement.classList.remove('js');
@@ -34,7 +38,7 @@ if (reduced) {
       gsap.set(el, { visibility: 'visible' });
       const hero = el.closest('[data-hero]');
       gsap.from(split.lines, {
-        yPercent: 105, duration: 1.2, ease: 'power4.out', stagger: 0.09, delay: hero ? 0.25 : 0,
+        yPercent: 105, duration: 1.2, ease: 'power4.out', stagger: 0.09, delay: hero ? 0.25 + preDelay : 0,
         scrollTrigger: hero ? undefined : { trigger: el, start: 'top 85%', once: true },
       });
     });
@@ -44,7 +48,7 @@ if (reduced) {
 
   ScrollTrigger.batch('[data-reveal]', {
     start: 'top 90%', once: true,
-    onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.08 }),
+    onEnter: (b) => gsap.to(b, { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', stagger: 0.08, delay: b.some((e) => e.closest('[data-hero]')) ? preDelay + 0.4 : 0 }),
   });
 
   // Hero photo: slow push-in on load, drift on scroll
