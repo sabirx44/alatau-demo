@@ -31,7 +31,7 @@
 }
 
 @layer components {
-  .d-hero { font-size: clamp(52px, 8.4vw, 138px); line-height: 0.92; letter-spacing: -0.045em; font-weight: 300; }
+  .d-hero { font-size: clamp(50px, 7.2vw, 120px); line-height: 0.92; letter-spacing: -0.045em; font-weight: 300; }
   .d-xl { font-size: clamp(38px, 5.4vw, 84px); line-height: 0.98; letter-spacing: -0.04em; font-weight: 300; }
   .d-l { font-size: clamp(26px, 2.6vw, 38px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 400; }
   html[dir="rtl"] .d-hero, html[dir="rtl"] .d-xl, html[dir="rtl"] .d-l { letter-spacing: 0; line-height: 1.15; }
