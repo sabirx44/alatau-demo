@@ -100,7 +100,7 @@ const { t, address, locale } = Astro.props;
     if (act === 'ics' && state.date) {
       const [y, m, day] = state.date.split('-').map(Number);
       const [hh, mm] = (state.time || '10:00').split(':').map(Number);
-      const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//esanov//alatau//RU', 'BEGIN:VEVENT', `UID:${state.code}@alatau`, `DTSTART:${y}${pad(m)}${pad(day)}T${pad(hh)}${pad(mm)}00`, 'DURATION:PT1H', `SUMMARY:Alatau Smile · ${d.dataset.title}`, `LOCATION:${d.dataset.address}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+      const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//sabr//alatau//RU', 'BEGIN:VEVENT', `UID:${state.code}@alatau`, `DTSTART:${y}${pad(m)}${pad(day)}T${pad(hh)}${pad(mm)}00`, 'DURATION:PT1H', `SUMMARY:Alatau Smile · ${d.dataset.title}`, `LOCATION:${d.dataset.address}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
       save(URL.createObjectURL(new Blob([ics], { type: 'text/calendar' })), `${state.code}.ics`);
     }
   });

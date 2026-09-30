@@ -19,7 +19,7 @@ const ru = {
     { name: 'Динара', text: 'Водим детей к Мадине. Сын теперь сам просится на осмотр.' },
   ] },
   contacts: { title: 'Ждём вас', address: 'Алматы, ул. Тимирязева, 42', hours: 'Ежедневно 9:00–21:00', phone: '+7 700 000 00 00', addressLabel: 'Адрес', hoursLabel: 'Часы работы', phoneLabel: 'Телефон', now: 'Сейчас в Алматы', route: 'Маршрут в 2GIS' },
-  footer: 'Демо-проект Esanov. Клиника, врачи и отзывы вымышлены, фото сгенерированы.',
+  footer: 'Демо-проект SABR. Клиника, врачи и отзывы вымышлены, фото: авторы Pexels.',
 };
 type UI = typeof ru;
 
@@ -42,7 +42,7 @@ const uz: UI = {
     { name: 'Dinara', text: 'Bolalarni Madinaga olib boramiz. O‘g‘lim endi o‘zi ko‘rikka boraman deydi.' },
   ] },
   contacts: { title: 'Sizni kutamiz', address: 'Olmaota, Timiryazev ko‘chasi, 42', hours: 'Har kuni 9:00–21:00', phone: '+7 700 000 00 00', addressLabel: 'Manzil', hoursLabel: 'Ish vaqti', phoneLabel: 'Telefon', now: 'Hozir Olmaotada', route: '2GIS da yo‘nalish' },
-  footer: 'Esanov demo loyihasi. Klinika, shifokorlar va sharhlar to‘qima, rasmlar sun’iy yaratilgan.',
+  footer: 'SABR demo loyihasi. Klinika, shifokorlar va sharhlar to‘qima, rasmlar: Pexels mualliflari.',
 };
 
 const kk: UI = {
@@ -64,7 +64,7 @@ const kk: UI = {
     { name: 'Динара', text: 'Балаларды Мадинаға апарамыз. Ұлым енді өзі тексеруге барғысы келеді.' },
   ] },
   contacts: { title: 'Сізді күтеміз', address: 'Алматы, Тимирязев көшесі, 42', hours: 'Күн сайын 9:00–21:00', phone: '+7 700 000 00 00', addressLabel: 'Мекенжай', hoursLabel: 'Жұмыс уақыты', phoneLabel: 'Телефон', now: 'Қазір Алматыда', route: '2GIS-тегі бағыт' },
-  footer: 'Esanov демо жобасы. Клиника, дәрігерлер мен пікірлер ойдан алынған, суреттер жасанды түрде жасалған.',
+  footer: 'SABR демо жобасы. Клиника, дәрігерлер мен пікірлер ойдан алынған, суреттер: Pexels авторлары.',
 };
 
 const en: UI = {
@@ -86,7 +86,7 @@ const en: UI = {
     { name: 'Dinara', text: 'Our kids see Dr Madina. My son now asks to go for check-ups.' },
   ] },
   contacts: { title: 'See you soon', address: 'Almaty, 42 Timiryazev St', hours: 'Every day 9:00–21:00', phone: '+7 700 000 00 00', addressLabel: 'Address', hoursLabel: 'Hours', phoneLabel: 'Phone', now: 'Now in Almaty', route: 'Directions in 2GIS' },
-  footer: 'Esanov demo project. The clinic, doctors and reviews are fictional; photos are generated.',
+  footer: 'SABR demo project. The clinic, doctors and reviews are fictional; photos by Pexels contributors.',
 };
 
 const ar: UI = {
@@ -108,7 +108,7 @@ const ar: UI = {
     { name: 'دينارا', text: 'أطفالنا يزورون الدكتورة مادينا. ابني يطلب الآن الذهاب للفحص بنفسه.' },
   ] },
   contacts: { title: 'بانتظاركم', address: 'ألماتي، شارع تيميريازيف 42', hours: 'يوميًا 9:00–21:00', phone: '+7 700 000 00 00', addressLabel: 'العنوان', hoursLabel: 'ساعات العمل', phoneLabel: 'الهاتف', now: 'الآن في ألماتي', route: 'الاتجاهات في 2GIS' },
-  footer: 'مشروع تجريبي من Esanov. العيادة والأطباء والآراء خيالية، والصور مولّدة.',
+  footer: 'مشروع تجريبي من SABR. العيادة والأطباء والآراء خيالية، والصور من مساهمي Pexels.',
 };
 
 export const ui: Record<Lang, UI> = { ru, uz, kk, en, ar };
