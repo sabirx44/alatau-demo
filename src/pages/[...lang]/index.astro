@@ -5,18 +5,24 @@ import LangSwitch from '../../components/LangSwitch.astro';
 import ToothChart from '../../components/ToothChart.astro';
 import AppointmentCard from '../../components/AppointmentCard.astro';
 import Btn from '../../components/Btn.astro';
+import Logo from '../../components/Logo.astro';
 import { ui } from '../../i18n/ui';
+import { ex } from '../../i18n/extra';
 import { langMeta, path, staticLangPaths, type Lang } from '../../i18n/langs';
 import { services, doctors } from '../../data/clinic';
 
 export const getStaticPaths = staticLangPaths;
 const { lang } = Astro.props as { lang: Lang };
 const t = ui[lang];
+const x = ex[lang];
 const arrow = '<svg class="dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
-const welcome = { ru: 'Добро пожаловать', uz: 'Xush kelibsiz', kk: 'Қош келдіңіз', en: 'Welcome', ar: 'أهلاً وسهلاً' }[lang];
 const look = { ru: 'Смотреть', uz: 'Ko‘rish', kk: 'Көру', en: 'View', ar: 'عرض' }[lang];
 const times = ['09:00', '10:30', '12:00', '14:00', '15:30', '17:00', '18:30'];
-// Alatau ridge line, used at the foot of the hero and the footer
+// Three strips across the portrait: the treatments people come for
+const strips = ['implant', 'veneers', 'whitening'].map((id) => services.find((s) => s.id === id)!);
+// Next free times per doctor, shown as tappable chips
+const slotsFor = (first: string) => { const [h, m] = first.split(':').map(Number); return [0, 90, 180].map((d) => { const v = h * 60 + m + d; return `${String(Math.floor(v / 60)).padStart(2, '0')}:${String(v % 60).padStart(2, '0')}`; }); };
+// Alatau ridge line for the footer
 const ridge = 'M0 120 L90 70 L150 95 L230 30 L300 80 L360 55 L430 100 L520 20 L600 75 L660 50 L740 90 L820 35 L900 85 L980 60 L1060 100 L1140 40 L1220 80 L1300 55 L1440 110';
 const schema = {
   '@context': 'https://schema.org',
@@ -30,143 +36,181 @@ const schema = {
   availableLanguage: ['ru', 'kk', 'en'],
   inLanguage: langMeta[lang].locale,
 };
+const navLinks = [['#services', t.nav.services], ['#clinic', x.clinicKicker], ['#doctors', t.nav.doctors], ['#contacts', t.nav.contacts]] as const;
 ---
 <Base lang={lang} title={t.meta.title} description={t.meta.description} schema={schema}>
+  <!-- Intro: the tooth-and-peaks mark draws itself -->
   <div class="kpre" data-preloader aria-hidden="true">
-    <div class="flex flex-col items-center gap-6">
-      <span class="relative block size-24 rounded-full" data-pre-in style="box-shadow:0 0 0 6px #E9EEF2,0 0 0 7px rgba(12,26,43,.2);background:radial-gradient(circle at 35% 30%,#fff,#D6E7F0 70%)"></span>
-      <span class="overflow-hidden"><span class="block text-[28px] font-light tracking-[-0.03em]" data-pre-text>{welcome}</span></span>
+    <div class="flex flex-col items-center gap-5">
+      <Logo class="size-24 text-ink" draw />
+      <span class="overflow-hidden px-1"><span class="block text-[24px] font-semibold tracking-[-0.04em]" data-pre-text>Alatau Smile</span></span>
     </div>
   </div>
   <div class="kprogress" data-progress-bar aria-hidden="true"></div>
   <div class="kcursor" data-cursor-el aria-hidden="true"><span class="kcursor-dot"></span><span class="kcursor-label" data-cursor-label></span></div>
-  <header class="sticky top-0 z-40 bg-snow/85 backdrop-blur-xl">
-    <div class="mx-auto flex h-18 max-w-[1440px] items-center gap-6 px-5 md:px-10">
-      <a href={path(lang)} class="me-auto flex items-center gap-2.5 text-[19px] font-medium tracking-[-0.02em]">
-        <span class="relative grid size-8 place-items-center rounded-full bg-ink"><span class="size-4 rounded-full border-2 border-coral"></span></span>
-        Alatau Smile
-      </a>
-      <nav class="hidden items-center gap-8 text-[15px] text-slate lg:flex" aria-label={t.nav.services}>
-        <a class="hover:text-ink" href="#services">{t.nav.services}</a>
-        <a class="hover:text-ink" href="#doctors">{t.nav.doctors}</a>
-        <a class="hover:text-ink" href="#contacts">{t.nav.contacts}</a>
-      </nav>
-      <LangSwitch lang={lang} label={t.nav.lang} />
-      <Btn href="#book" icon={false} class="!hidden !h-11 !px-5 !text-[15px] sm:!inline-flex">{t.nav.book}</Btn>
-    </div>
-  </header>
 
-  <!-- HERO -->
-  <section class="relative overflow-hidden" data-hero>
-    <div class="mx-auto grid max-w-[1440px] items-center gap-10 px-5 pb-24 pt-8 md:px-10 lg:grid-cols-[1fr_0.95fr] lg:gap-16 lg:pb-32 lg:pt-12">
-      <div class="relative z-10">
-        <p class="eyebrow" data-reveal>{t.hero.eyebrow}</p>
-        <h1 class="d-hero mt-5 max-w-[9ch]" data-split>{t.hero.title}</h1>
-        <p class="mt-7 max-w-[40ch] text-[19px] leading-relaxed text-slate" data-reveal>{t.hero.text}</p>
-        <div class="mt-9 flex flex-wrap gap-3" data-reveal>
-          <Btn href="#book">{t.hero.cta}</Btn>
-          <Btn href="#services" variant="line">{t.hero.secondary}</Btn>
-        </div>
-        <ul class="mt-12 flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-slate" data-reveal>
-          {t.trust.map((x) => <li class="flex items-center gap-2"><span class="size-1.5 rounded-full bg-coral"></span>{x}</li>)}
-        </ul>
-      </div>
-
-      <div class="relative" data-reveal>
-        <div class="card relative aspect-[4/5] touch-none select-none" dir="ltr" data-mirror-area data-wipe>
-          <Photo name="hero" alt={t.hero.title} eager class="before" position="center 30%" sizes="(min-width: 1024px) 45vw, 100vw" />
-          <div class="mirror" data-mirror hidden>
-            <div class="mirror-handle"></div>
-            <div class="mirror-lens"><span class="mirror-tag">{t.hero.after}</span></div>
-          </div>
-          <span class="absolute start-5 top-5 rounded-full bg-paper/90 px-3 py-1.5 text-[12px] font-medium uppercase tracking-[.06em] backdrop-blur">{t.hero.before}</span>
-          <div class="absolute bottom-4 end-4 z-10 flex items-center gap-3 rounded-2xl bg-paper px-5 py-4 shadow-[0_25px_50px_-20px_rgba(12,26,43,.35)]" data-float>
-          <span class="relative flex size-2.5"><span class="absolute inline-flex size-full animate-ping rounded-full bg-coral opacity-60"></span><span class="relative size-2.5 rounded-full bg-coral"></span></span>
-          <span class="text-[14px] leading-tight"><span class="text-slate">{t.doctors.next}</span><br /><b class="num text-[17px] font-medium" dir="ltr">16:30</b></span>
-        </div>
-        </div>
-        <p class="mt-4 flex items-center gap-2 text-[14px] text-slate">
-          <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m14.5 14.5 6 6"/></svg>
-          {t.hero.hint}
-        </p>
-      </div>
-    </div>
-    <svg class="pointer-events-none absolute inset-x-0 bottom-0 h-[120px] w-full text-glacier-deep" viewBox="0 0 1440 130" preserveAspectRatio="none" aria-hidden="true"><path d={ridge} fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" /></svg>
-  </section>
-
-  <div class="kmarquee border-b border-line bg-paper py-7" data-marquee="34" aria-hidden="true">
-    <div data-marquee-track>
-      {[0, 1].map(() => services.map((s) => <span class="flex items-center gap-8 pe-8 text-[clamp(36px,4.6vw,68px)] font-light leading-none tracking-[-0.04em]">{s.name[lang]}<span class="size-5 rounded-full border-2 border-coral"></span></span>))}
+  <!-- Floating bar after the hero: a pill on desktop, a thumb bar on phones -->
+  <div class="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(10px+env(safe-area-inset-bottom))] lg:bottom-auto lg:top-0 lg:pb-0 lg:pt-4" data-bar>
+    <div class="pointer-events-auto mx-auto flex max-w-[760px] items-center gap-2 rounded-full bg-ink/92 p-1.5 text-snow shadow-[0_20px_50px_-20px_rgba(14,27,43,.7)] backdrop-blur-xl lg:gap-6 lg:ps-5">
+      <a href={path(lang)} class="hidden items-center gap-2 lg:flex"><Logo class="size-7 text-snow" /><b class="text-[16px] tracking-[-0.03em]">Alatau Smile</b></a>
+      <nav class="hidden flex-1 justify-center gap-6 text-[14px] text-snow/75 lg:flex">{navLinks.map(([h, l]) => <a class="hover:text-snow" href={h}>{l}</a>)}</nav>
+      <a href={`tel:${t.contacts.phone.replace(/\s/g, '')}`} class="grid size-12 shrink-0 place-items-center rounded-full bg-snow/10 lg:hidden" aria-label={t.contacts.phoneLabel}><svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" /></svg></a>
+      <a href="#book" class="kbtn kbtn-mint press no-ico !min-h-12 flex-1 justify-center !px-6 !text-[15px] lg:flex-none">{t.nav.book}</a>
     </div>
   </div>
 
-  <!-- SERVICES -->
-  <section id="services" class="scroll-mt-20 bg-paper py-24 lg:py-32">
-    <div class="mx-auto max-w-[1440px] px-5 md:px-10">
+  <!-- HERO: the clinic window. Huge type, a real patient, the treatments laid across her portrait -->
+  <section class="p-2 md:p-3" data-hero>
+    <div class="frame lg:min-h-[calc(100svh-24px)]">
+      <header class="relative z-20 flex h-[72px] items-center gap-4 px-4 md:h-[84px] md:px-8">
+        <a href={path(lang)} class="me-auto flex items-center gap-2.5" aria-label="Alatau Smile">
+          <Logo class="size-9 text-ink" />
+          <span class="text-[19px] font-semibold leading-none tracking-[-0.045em]">Alatau<br /><span class="text-mint-deep">Smile</span></span>
+        </a>
+        <nav class="hidden items-center gap-7 text-[15px] text-slate lg:flex" aria-label={t.nav.services}>{navLinks.map(([h, l]) => <a class="hover:text-ink" href={h}>{l}</a>)}</nav>
+        <LangSwitch lang={lang} label={t.nav.lang} />
+        <Btn href="#book" variant="ink" icon={false} class="!hidden !min-h-11 !px-5 !text-[15px] sm:!inline-flex">{t.nav.book}</Btn>
+      </header>
+
+      <div class="relative lg:min-h-[calc(100svh-24px-84px)]">
+        <!-- Portrait with the service strips -->
+        <div class="relative mx-2 aspect-square overflow-hidden rounded-[22px] sm:aspect-[16/11] lg:absolute lg:inset-y-0 lg:end-0 lg:mx-0 lg:aspect-auto lg:w-[54%] lg:rounded-none hero-fade" data-hero-img>
+          <Photo name="hero" alt={x.heroPhoto} eager position="center 18%" sizes="(min-width: 1024px) 54vw, 100vw" />
+                    <a href="#book" class="badge absolute end-3 top-3 z-10 !size-[92px] lg:!hidden" aria-label={t.nav.book}>
+            {lang === 'ar' ? <span class="absolute bottom-[22%] text-[13px] font-bold">{t.nav.book}</span> : <svg class="badge-ring" viewBox="0 0 100 100" dir="ltr" aria-hidden="true"><defs><path id="bm" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0" /></defs><text font-size="9.6" font-weight="600" letter-spacing="1.6" fill="currentColor"><textPath href="#bm" textLength={lang === 'ar' ? undefined : 236} lengthAdjust="spacing">{x.badge}</textPath></text></svg>}
+            <svg class="arrow !size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+          </a>
+        </div>
+
+        <div class="relative z-10 mx-2 mt-2 grid gap-1.5 lg:absolute lg:end-6 lg:top-6 lg:mx-0 lg:mt-0 lg:w-[calc(54%-48px)] lg:gap-2">
+          {strips.map((s, i) => (
+            <a href="#book" data-service={s.id} class="strip press" data-reveal style={`transition-delay:${i * 60}ms`}>
+              <b>{s.name[lang]}</b>
+              <span class="price num text-slate">{t.services.from} <b class="!text-[16px] !tracking-normal text-ink" dir="ltr">{s.price} ₸</b><Fragment set:html={arrow} /></span>
+            </a>
+          ))}
+        </div>
+
+        <!-- Words -->
+        <div class="relative z-10 px-4 pb-8 pt-7 md:px-8 lg:absolute lg:inset-x-0 lg:bottom-0 lg:px-10 lg:pb-12 lg:pt-0">
+          <p class="eyebrow" data-reveal>{t.hero.eyebrow}</p>
+          <h1 class="d-hero hero-h1 mt-4 max-w-[10ch] lg:max-w-[11ch]" data-split>{t.hero.title}</h1>
+          <div class="mt-7">
+            <div class="max-w-[460px]">
+              <p class="text-[17px] leading-relaxed text-slate md:text-[18px]" data-reveal>{x.heroText}</p>
+              <div class="mt-7 flex flex-wrap gap-3" data-reveal>
+                <Btn href="#book" variant="ink">{t.hero.cta}</Btn>
+                <Btn href="#services" variant="line">{t.hero.secondary}</Btn>
+              </div>
+            </div>
+            <div class="mt-8 flex items-center gap-4" data-reveal>
+              <div class="avatars flex">{[1, 2, 3].map((i) => <span class="relative block size-[46px] overflow-hidden rounded-full ring-[3px] ring-paper"><Photo name={`patient-${i}`} alt="" sizes="50px" label={false} /></span>)}<span class="relative grid size-[46px] place-items-center rounded-full bg-mint text-[13px] font-semibold ring-[3px] ring-paper">+2k</span></div>
+              <p class="text-[14px] leading-tight text-slate"><b class="num block text-[17px] text-ink">4,9 ★</b>{t.reviews.count}</p>
+            </div>
+          </div>
+        </div>
+        <a href="#book" class="badge absolute bottom-12 end-10 z-10 hidden lg:grid" aria-label={t.nav.book} data-magnetic="0.3">
+          {lang === 'ar' ? <span class="absolute bottom-[22%] text-[13px] font-bold">{t.nav.book}</span> : <svg class="badge-ring" viewBox="0 0 100 100" dir="ltr" aria-hidden="true"><defs><path id="bd" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0" /></defs><text font-size="9.6" font-weight="600" letter-spacing="1.6" fill="currentColor"><textPath href="#bd" textLength={lang === 'ar' ? undefined : 236} lengthAdjust="spacing">{x.badge}</textPath></text></svg>}
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust line -->
+  <ul class="mx-auto grid max-w-[1440px] grid-cols-2 gap-px px-2 py-2 md:grid-cols-4 md:px-3">
+    {t.trust.map((v) => <li class="flex min-h-[56px] items-center gap-3 rounded-2xl px-3 text-[14px] leading-snug text-slate md:justify-center md:text-[15px]"><span class="size-2 shrink-0 rounded-full bg-mint"></span>{v}</li>)}
+  </ul>
+
+  <!-- SERVICES: an editorial price list -->
+  <section id="services" class="scroll-mt-24 py-20 lg:py-28">
+    <div class="mx-auto max-w-[1440px] px-4 md:px-10">
       <div class="flex flex-wrap items-end justify-between gap-6">
         <h2 class="d-xl" data-split>{t.services.title}</h2>
         <p class="max-w-[38ch] text-slate" data-reveal>{t.services.text}</p>
       </div>
-      <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {services.map((s) => (
-          <article class="group" data-reveal>
-            <div class="relative aspect-[4/3] overflow-hidden rounded-[24px] bg-glacier" data-zoom data-wipe data-tilt="4" data-cursor={look}>
-              <Photo name={`service-${s.id}`} alt={s.name[lang]} sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw" class="transition-transform duration-[1.2s] group-hover:scale-105" />
-            </div>
-            <div class="mt-5 flex items-start justify-between gap-4">
-              <div>
-                <h3 class="d-l">{s.name[lang]}</h3>
-                <p class="mt-1.5 text-[15px] text-slate">{s.text[lang]}</p>
-              </div>
-              <p class="num shrink-0 pt-1.5 text-[15px] text-slate"><span class="text-[12px]">{t.services.from}</span> <b class="text-[18px] font-medium text-ink" dir="ltr" data-count>{s.price} ₸</b></p>
-            </div>
-            <a href="#book" data-service={s.id} class="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-coral">{t.services.book}<Fragment set:html={arrow} /></a>
-          </article>
+      <div class="mt-12" data-svc-list>
+        {services.map((s, i) => (
+          <a href="#book" data-service={s.id} data-svc={i} class="svc group" data-cursor={look} data-reveal>
+            <span class="svc-thumb lg:hidden"><Photo name={`service-${s.id}`} alt="" sizes="80px" label={false} /></span>
+            <span class="min-w-0 flex-1"><h3>{s.name[lang]}</h3><span class="mt-2 block text-[15px] text-slate">{s.text[lang]}</span></span>
+            <span class="shrink-0 text-end"><span class="block text-[13px] text-slate">{t.services.from}</span><b class="num block whitespace-nowrap text-[17px] md:text-[22px]" dir="ltr">{s.price} ₸</b></span>
+            <span class="hidden size-12 shrink-0 place-items-center rounded-full bg-ink text-mint transition-transform duration-500 group-hover:-rotate-45 md:grid [&_svg]:size-5" set:html={arrow} />
+          </a>
+        ))}
+      </div>
+    </div>
+    <div class="svc-float" aria-hidden="true" data-svc-float>
+      {services.map((s, i) => <span class="absolute inset-0 opacity-0 transition-opacity duration-300" data-i={i}><Photo name={`service-${s.id}`} alt="" sizes="300px" label={false} /></span>)}
+    </div>
+  </section>
+
+  <!-- CLINIC: what a visit looks like -->
+  <section id="clinic" class="scroll-mt-24 px-2 md:px-3">
+    <div class="mx-auto max-w-[1440px] overflow-hidden rounded-[32px] bg-ink px-4 py-16 text-snow md:px-10 lg:py-24">
+      <div class="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+        <div>
+          <p class="eyebrow !text-mint" data-reveal>{x.clinicKicker}</p>
+          <h2 class="d-xl mt-4 max-w-[13ch]" data-split>{x.clinicTitle}</h2>
+          <p class="mt-6 max-w-[44ch] text-snow/70" data-reveal>{x.clinicText}</p>
+        </div>
+        <div class="relative aspect-[16/11] overflow-hidden rounded-[24px]" data-wipe data-zoom><Photo name="clinic-plan" alt={x.clinic[0][0]} sizes="(min-width: 1024px) 50vw, 100vw" /></div>
+      </div>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        {(['clinic-plan', 'clinic-room', 'clinic-light'] as const).map((p, i) => (
+          <figure class="overflow-hidden rounded-[24px] bg-snow/[.06] ring-1 ring-snow/10" data-reveal>
+            {i > 0 ? <div class="relative aspect-[16/10] overflow-hidden" data-zoom><Photo name={p} alt={x.clinic[i][0]} sizes="(min-width: 768px) 30vw, 100vw" /></div> : <div class="relative aspect-[16/10] overflow-hidden" data-zoom><Photo name="clinic-consult" alt={x.clinic[0][0]} sizes="(min-width: 768px) 30vw, 100vw" /></div>}
+            <figcaption class="p-5"><b class="block text-[19px] tracking-[-0.02em]">{x.clinic[i][0]}</b><span class="mt-1 block text-[15px] text-snow/60">{x.clinic[i][1]}</span></figcaption>
+          </figure>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- DOCTORS -->
-  <section id="doctors" class="scroll-mt-20 py-24 lg:py-32">
-    <div class="mx-auto max-w-[1440px] px-5 md:px-10">
+  <!-- DOCTORS: one at a time, with "Next" -->
+  <section id="doctors" class="scroll-mt-24 overflow-hidden py-20 lg:py-28">
+    <div class="mx-auto max-w-[1440px] px-4 md:px-10">
       <div class="flex flex-wrap items-end justify-between gap-6">
         <h2 class="d-xl" data-split>{t.doctors.title}</h2>
-        <p class="max-w-[34ch] text-slate" data-reveal>{t.doctors.text}</p>
+        <div class="flex items-center gap-3">
+          <p class="num me-2 text-[15px] text-slate" aria-live="polite"><b class="text-ink" data-doc-i>1</b> / {doctors.length}</p>
+          <button type="button" class="grid size-14 place-items-center rounded-full bg-paper shadow-[inset_0_0_0_1.5px_var(--color-line)] transition-colors hover:bg-ink hover:text-snow" data-doc-prev aria-label={x.prevDoctor}><svg viewBox="0 0 24 24" class="size-5 rtl:-scale-x-100" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" /></svg></button>
+          <button type="button" class="flex h-14 items-center gap-3 rounded-full bg-ink ps-6 pe-2 text-[15px] font-medium text-snow transition-colors hover:bg-mint hover:text-ink" data-doc-next>{x.nextDoctor}<span class="grid size-10 place-items-center rounded-full bg-mint text-ink"><svg viewBox="0 0 24 24" class="size-5 rtl:-scale-x-100" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></button>
+        </div>
       </div>
-      <div class="mt-14 grid gap-5 md:grid-cols-3">
-        {doctors.map((d) => (
-          <article class="card flex flex-col p-2.5" data-reveal data-tilt="4">
-            <div class="relative aspect-[4/5] overflow-hidden rounded-[20px] bg-glacier" data-zoom>
-              <Photo name={`doctor-${d.id}`} alt={d.name[lang]} position="center 20%" sizes="(min-width: 768px) 30vw, 100vw" />
-              <p class="absolute start-3 top-3 flex items-center gap-2 rounded-full bg-paper/92 px-3 py-1.5 text-[13px] backdrop-blur">
-                <span class="size-2 rounded-full bg-coral"></span>{t.doctors.next} <b class="num font-medium" dir="ltr">{d.slot}</b>
-              </p>
-            </div>
-            <div class="flex flex-1 flex-col px-3.5 pb-3.5 pt-5">
-              <h3 class="d-l">{d.name[lang]}</h3>
-              <p class="mt-1 text-[15px] text-slate">{d.role[lang]}</p>
-              <dl class="mt-5 grid grid-cols-2 gap-3 border-t border-line pt-4 text-[14px]">
-                <div><dt class="text-slate">{t.doctors.years}</dt><dd class="num mt-0.5 text-[20px] font-medium" data-count>{d.years}</dd></div>
-                <div><dt class="text-slate">{t.doctors.speaks}</dt><dd class="mt-1 font-medium" dir="ltr">{d.langs}</dd></div>
+      <div class="relative mt-10" data-docs>
+        {doctors.map((d, i) => (
+          <article class:list={['doc grid gap-6 md:grid-cols-[0.85fr_1.15fr] md:gap-10', i > 0 && 'hidden']} data-doc={i} aria-hidden={i > 0 ? 'true' : undefined}>
+            <div class="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-ice"><Photo name={`doctor-${d.id}`} alt={d.name[lang]} position="center 18%" sizes="(min-width: 768px) 40vw, 100vw" /></div>
+            <div class="flex flex-col justify-end md:pb-4">
+              <p class="eyebrow">{d.role[lang]}</p>
+              <h3 class="d-xl mt-3 !text-[clamp(40px,5vw,80px)]">{d.name[lang]}</h3>
+              <dl class="mt-8 grid grid-cols-2 gap-6 border-t border-line pt-6 sm:grid-cols-3">
+                <div><dt class="text-[14px] text-slate">{t.doctors.years}</dt><dd class="num mt-1 text-[32px] font-semibold tracking-[-0.04em]">{d.years}</dd></div>
+                <div><dt class="text-[14px] text-slate">{t.doctors.speaks}</dt><dd class="mt-2.5 font-medium" dir="ltr">{d.langs}</dd></div>
               </dl>
-              <a href="#book" data-doctor={d.id} class="kbtn kbtn-line press mt-6 w-full justify-between" data-magnetic="0.1"><span>{t.doctors.book}</span><span class="ico" set:html={arrow + arrow} /></a>
+              <p class="mt-8 text-[14px] text-slate">{x.slots}</p>
+              <div class="mt-3 flex flex-wrap gap-2">{slotsFor(d.slot).map((s) => <a href="#book" class="chip num" data-doctor={d.id} data-time={s} dir="ltr">{s}</a>)}</div>
+              <div class="mt-8"><a href="#book" data-doctor={d.id} class="kbtn kbtn-mint press" data-magnetic="0.15"><span>{t.doctors.book}</span><span class="ico" set:html={arrow + arrow} /></a></div>
             </div>
           </article>
         ))}
+        <div class="mt-8 flex gap-3" role="tablist">
+          {doctors.map((d, i) => <button type="button" role="tab" class="doc-thumb relative h-20 w-16 overflow-hidden rounded-2xl opacity-50 ring-2 ring-transparent transition md:h-24 md:w-20" aria-selected={i === 0 ? 'true' : 'false'} data-doc-go={i} aria-label={d.name[lang]}><Photo name={`doctor-${d.id}`} alt="" position="center 18%" sizes="80px" label={false} /></button>)}
+        </div>
       </div>
     </div>
   </section>
 
   <!-- BOOKING -->
-  <section id="book" class="scroll-mt-20 px-3 md:px-5">
-    <div class="mx-auto grid max-w-[1440px] gap-10 rounded-[36px] bg-glacier px-5 py-16 md:px-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-24">
+  <section id="book" class="scroll-mt-24 px-2 md:px-3">
+    <div class="mx-auto grid max-w-[1440px] gap-10 rounded-[32px] bg-ice px-4 py-16 md:px-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:py-24">
       <div>
         <h2 class="d-xl" data-split>{t.chart.title}</h2>
         <p class="mt-5 max-w-[38ch] text-slate" data-reveal>{t.chart.text}</p>
         <div class="mt-8 max-w-[440px]" data-reveal><ToothChart lang={lang} t={t.chart} /></div>
       </div>
-      <form class="card self-start p-6 md:p-9" data-invite novalidate data-reveal>
+      <form class="card self-start p-5 md:p-9" data-invite novalidate data-reveal>
         <h3 class="d-l">{t.book.title}</h3>
         <p class="mt-2 text-[15px] text-slate">{t.book.text}</p>
         <div class="mt-5 flex items-center justify-between gap-4 rounded-2xl bg-snow px-5 py-4">
@@ -174,9 +218,9 @@ const schema = {
           <span id="tooth-out" class="text-end text-[15px] font-medium">{t.chart.none}</span>
         </div>
         <input type="hidden" name="tooth" id="f-tooth" data-label={t.book.tooth} />
-        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 [&>*]:min-w-0">
           <label class="grid gap-2 text-[14px] text-slate">{t.book.name}<input class="input" name="name" autocomplete="name" required data-label={t.book.patient} /></label>
-          <label class="grid gap-2 text-[14px] text-slate">{t.book.phone}<input class="input" name="phone" type="tel" autocomplete="tel" required dir="ltr" /></label>
+          <label class="grid gap-2 text-[14px] text-slate">{t.book.phone}<input class="input" name="phone" type="tel" inputmode="tel" autocomplete="tel" required dir="ltr" /></label>
           <label class="grid gap-2 text-[14px] text-slate">{t.book.service}
             <select class="input" name="service" data-label={t.book.service}><option value="consult">{t.book.consult}</option>{services.map((s) => <option value={s.id}>{s.name[lang]}</option>)}</select>
           </label>
@@ -184,27 +228,27 @@ const schema = {
             <select class="input" name="doctor" data-label={t.book.doctor}><option value="">{t.book.anyDoctor}</option>{doctors.map((d) => <option value={d.id}>{d.name[lang]}</option>)}</select>
           </label>
           <label class="grid gap-2 text-[14px] text-slate">{t.book.date}<input class="input" name="date" type="date" required data-label={t.book.date} /></label>
-          <label class="grid gap-2 text-[14px] text-slate">{t.book.time}<select class="input num" name="time" data-label={t.book.time}>{times.map((x) => <option>{x}</option>)}</select></label>
+          <label class="grid gap-2 text-[14px] text-slate">{t.book.time}<select class="input num" name="time" data-label={t.book.time}>{times.map((v) => <option>{v}</option>)}</select></label>
         </div>
-        <button type="submit" class="kbtn kbtn-coral press mt-7 w-full justify-between" data-magnetic="0.1"><span>{t.book.submit}</span><span class="ico" set:html={arrow + arrow} /></button>
+        <button type="submit" class="kbtn kbtn-mint press mt-7 w-full justify-between" data-magnetic="0.1"><span>{t.book.submit}</span><span class="ico" set:html={arrow + arrow} /></button>
       </form>
     </div>
   </section>
 
   <!-- REVIEWS -->
-  <section class="py-24 lg:py-32">
-    <div class="mx-auto grid max-w-[1440px] gap-12 px-5 md:px-10 lg:grid-cols-[0.8fr_1.2fr]">
+  <section class="py-20 lg:py-28">
+    <div class="mx-auto grid max-w-[1440px] gap-12 px-4 md:px-10 lg:grid-cols-[0.8fr_1.2fr]">
       <div>
         <h2 class="d-xl" data-split>{t.reviews.title}</h2>
-        <p class="mt-8 flex items-baseline gap-4" data-reveal><span class="num text-[clamp(80px,9vw,140px)] font-light leading-none tracking-[-0.05em] text-coral" dir="ltr" data-count>{t.reviews.rating}</span><span class="text-slate">{t.reviews.count}</span></p>
+        <p class="mt-8 flex items-baseline gap-4" data-reveal><span class="num text-[clamp(84px,10vw,160px)] font-semibold leading-none tracking-[-0.07em] text-mint-deep" dir="ltr">{t.reviews.rating}</span><span class="text-slate">{t.reviews.count}</span></p>
       </div>
-      <div class="grid gap-4">
+      <div class="grid gap-3">
         {t.reviews.items.map((r, i) => (
-          <figure class="card flex gap-5 p-6 transition-transform duration-500 hover:-translate-y-1 md:p-8" data-reveal>
-            <div class="relative size-14 shrink-0 overflow-hidden rounded-full bg-glacier"><Photo name={`patient-${i + 1}`} alt="" sizes="60px" label={false} /></div>
-            <div>
+          <figure class="card flex gap-5 p-6 md:p-8" data-reveal>
+            <div class="relative size-14 shrink-0 overflow-hidden rounded-full bg-ice"><Photo name={`patient-${i + 1}`} alt="" sizes="60px" label={false} /></div>
+            <div class="min-w-0">
               <blockquote class="text-[18px] leading-snug">{r.text}</blockquote>
-              <figcaption class="mt-3 text-[14px] text-slate">{r.name} · <span class="text-coral" dir="ltr">★★★★★</span></figcaption>
+              <figcaption class="mt-3 text-[14px] text-slate">{r.name} · <span class="text-mint-deep" dir="ltr">★★★★★</span></figcaption>
             </div>
           </figure>
         ))}
@@ -213,14 +257,14 @@ const schema = {
   </section>
 
   <!-- CONTACTS -->
-  <footer id="contacts" class="relative overflow-hidden bg-ink text-snow">
+  <footer id="contacts" class="relative overflow-hidden bg-ink pb-24 text-snow lg:pb-0">
     <svg class="pointer-events-none absolute inset-x-0 top-10 h-[120px] w-full text-snow/15" viewBox="0 0 1440 130" preserveAspectRatio="none" aria-hidden="true"><path d={ridge} fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke" /></svg>
-    <div class="relative mx-auto max-w-[1440px] px-5 pb-10 pt-40 md:px-10">
+    <div class="relative mx-auto max-w-[1440px] px-4 pb-10 pt-40 md:px-10">
       <h2 class="d-hero" data-split>{t.contacts.title}</h2>
       <dl class="mt-16 grid gap-8 border-t border-snow/15 pt-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div><dt class="text-[13px] text-snow/55">{t.contacts.addressLabel}</dt><dd class="mt-2">{t.contacts.address}<br /><a class="mt-1 inline-block text-coral hover:underline" href="https://2gis.kz/almaty" target="_blank" rel="noopener">{t.contacts.route}</a></dd></div>
+        <div><dt class="text-[13px] text-snow/55">{t.contacts.addressLabel}</dt><dd class="mt-2">{t.contacts.address}<br /><a class="mt-1 inline-block text-mint hover:underline" href="https://2gis.kz/almaty" target="_blank" rel="noopener">{t.contacts.route}</a></dd></div>
         <div><dt class="text-[13px] text-snow/55">{t.contacts.hoursLabel}</dt><dd class="mt-2">{t.contacts.hours}</dd></div>
-        <div><dt class="text-[13px] text-snow/55">{t.contacts.phoneLabel}</dt><dd class="num mt-2" dir="ltr">{t.contacts.phone}</dd></div>
+        <div><dt class="text-[13px] text-snow/55">{t.contacts.phoneLabel}</dt><dd class="num mt-2" dir="ltr"><a href={`tel:${t.contacts.phone.replace(/\s/g, '')}`} class="hover:text-mint">{t.contacts.phone}</a></dd></div>
         <div><dt class="text-[13px] text-snow/55">{t.contacts.now}</dt><dd class="num mt-2" data-clock="Asia/Almaty"></dd></div>
       </dl>
       <p class="mt-16 text-[12px] text-snow/45">{t.footer}</p>
@@ -230,52 +274,60 @@ const schema = {
   <AppointmentCard t={t.book} address={t.contacts.address} locale={langMeta[lang].locale} />
 </Base>
 
+<style is:global>
+  [data-bar] { transform: translateY(130%); transition: transform .5s var(--ease); }
+  @media (min-width: 1024px) { [data-bar] { transform: translateY(-130%); } }
+  [data-bar].on { transform: none; }
+  .doc-thumb[aria-selected="true"] { opacity: 1; --tw-ring-color: var(--color-mint); }
+  .doc.in { animation: doc-in .7s var(--ease); }
+  @keyframes doc-in { from { opacity: 0; transform: translateX(24px); } }
+  html[dir="rtl"] .doc.in { animation-name: doc-in-rtl; }
+  @keyframes doc-in-rtl { from { opacity: 0; transform: translateX(-24px); } }
+  @media (prefers-reduced-motion: reduce) { .doc.in { animation: none; } }
+  .svc-float > span.on { opacity: 1; }
+</style>
+
 <script>
-  import { gsap } from 'gsap';
+  // Floating bar: shows once the hero is out of view
+  const bar = document.querySelector<HTMLElement>('[data-bar]');
+  const hero = document.querySelector('[data-hero]');
+  if (bar && hero) new IntersectionObserver(([e]) => bar.classList.toggle('on', !e.isIntersecting), { threshold: 0.05 }).observe(hero);
 
-  // Dentist's mirror: the lens shows the photo without the "before" tint
-  const area = document.querySelector<HTMLElement>('[data-mirror-area]');
-  const base = area?.querySelector<HTMLImageElement>('img.before');
-  const mirror = area?.querySelector<HTMLElement>('[data-mirror]');
-  if (area && base && mirror) {
-    const lens = mirror.querySelector<HTMLElement>('.mirror-lens')!;
-    const clone = document.createElement('img');
-    clone.alt = '';
-    clone.style.objectPosition = base.style.objectPosition;
-    lens.prepend(clone);
-    const sync = () => { clone.src = base.currentSrc || base.src; };
-    base.complete ? sync() : base.addEventListener('load', sync);
-    mirror.hidden = false;
-
-    const pos = { x: 0, y: 0 };
-    const size = () => mirror.offsetWidth;
-    function place() {
-      const r = size() / 2;
-      const w = area!.clientWidth, h = area!.clientHeight;
-      mirror!.style.transform = `translate(${pos.x - r}px, ${pos.y - r}px)`;
-      Object.assign(clone.style, { width: `${w}px`, height: `${h}px`, left: `${-(pos.x - r)}px`, top: `${-(pos.y - r)}px` });
-    }
-    // Idle: the mirror drifts slowly over the smile until the visitor takes it
-    let idle = true;
-    const t0 = performance.now();
-    gsap.ticker.add(() => {
-      if (!idle) return;
-      const t = (performance.now() - t0) / 1000;
-      pos.x = area.clientWidth * (0.5 + 0.18 * Math.sin(t * 0.6));
-      pos.y = area.clientHeight * (0.42 + 0.08 * Math.sin(t * 1.2));
-      place();
-    });
-    const xTo = gsap.quickTo(pos, 'x', { duration: 0.35, ease: 'power3', onUpdate: place });
-    const yTo = gsap.quickTo(pos, 'y', { duration: 0.35, ease: 'power3', onUpdate: place });
-    area.addEventListener('pointermove', (e) => {
-      const r = area.getBoundingClientRect();
-      if (idle) { idle = false; }
-      xTo(e.clientX - r.left);
-      yTo(e.clientY - r.top);
-    });
-    area.addEventListener('pointerdown', (e) => area.setPointerCapture(e.pointerId));
-    window.addEventListener('resize', place);
+  // Services: on desktop a photo follows the pointer over the list
+  const list = document.querySelector<HTMLElement>('[data-svc-list]');
+  const float = document.querySelector<HTMLElement>('[data-svc-float]');
+  if (list && float && matchMedia('(hover: hover) and (pointer: fine) and (min-width: 1024px)').matches) {
+    let x = 0, y = 0, fx = 0, fy = 0, raf = 0;
+    const loop = () => { fx += (x - fx) * 0.16; fy += (y - fy) * 0.16; float.style.transform = `translate(${fx - 150}px, ${fy - 190}px)`; raf = requestAnimationFrame(loop); };
+    list.addEventListener('pointerenter', (e) => { x = fx = e.clientX; y = fy = e.clientY; float.classList.add('on'); raf = requestAnimationFrame(loop); });
+    list.addEventListener('pointerleave', () => { float.classList.remove('on'); cancelAnimationFrame(raf); });
+    list.addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; });
+    list.querySelectorAll<HTMLElement>('[data-svc]').forEach((row) => row.addEventListener('pointerenter', () => {
+      float.querySelectorAll<HTMLElement>('[data-i]').forEach((s) => s.classList.toggle('on', s.dataset.i === row.dataset.svc));
+    }));
   }
+
+  // Doctors: one at a time with Next / Previous / thumbnails and swipe
+  const docs = [...document.querySelectorAll<HTMLElement>('[data-doc]')];
+  const thumbs = [...document.querySelectorAll<HTMLElement>('[data-doc-go]')];
+  const counter = document.querySelector('[data-doc-i]');
+  let di = 0;
+  const show = (n: number) => {
+    di = (n + docs.length) % docs.length;
+    docs.forEach((d, i) => { const on = i === di; d.classList.toggle('hidden', !on); d.toggleAttribute('aria-hidden', !on); d.classList.toggle('in', on); });
+    thumbs.forEach((b, i) => b.setAttribute('aria-selected', String(i === di)));
+    if (counter) counter.textContent = String(di + 1);
+  };
+  document.querySelector('[data-doc-next]')?.addEventListener('click', () => show(di + 1));
+  document.querySelector('[data-doc-prev]')?.addEventListener('click', () => show(di - 1));
+  thumbs.forEach((b, i) => b.addEventListener('click', () => show(i)));
+  const wrap = document.querySelector<HTMLElement>('[data-docs]');
+  let sx = 0;
+  wrap?.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });
+  wrap?.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 50) show(di + ((dx < 0) !== (document.documentElement.dir === 'rtl') ? 1 : -1));
+  });
 
   // Tooth chart selection feeds the booking form
   const out = document.getElementById('tooth-out')!;
@@ -283,7 +335,7 @@ const schema = {
   const noneText = out.textContent;
   const num = document.getElementById('chart-num');
   function pick(g: SVGGElement | null) {
-    document.querySelectorAll('.tooth').forEach((x) => x.setAttribute('aria-pressed', String(x === g)));
+    document.querySelectorAll('.tooth').forEach((t) => t.setAttribute('aria-pressed', String(t === g)));
     const v = g ? `${g.dataset.tooth} · ${g.dataset.name}` : '';
     field.value = v;
     out.textContent = v || noneText;
@@ -295,13 +347,19 @@ const schema = {
     g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
   });
 
-  // "Book" links on services and doctors preselect the form
+  // Service strips, price rows, doctor buttons and time chips preselect the form
   document.addEventListener('click', (e) => {
     const a = (e.target as HTMLElement).closest<HTMLElement>('[data-service],[data-doctor]');
     if (!a) return;
     const f = document.querySelector<HTMLFormElement>('form[data-invite]')!;
     if (a.dataset.service) (f.elements.namedItem('service') as HTMLSelectElement).value = a.dataset.service;
     if (a.dataset.doctor) (f.elements.namedItem('doctor') as HTMLSelectElement).value = a.dataset.doctor;
+    if (a.dataset.time) {
+      const sel = f.elements.namedItem('time') as HTMLSelectElement;
+      if (![...sel.options].some((o) => o.value === a.dataset.time)) sel.add(new Option(a.dataset.time, a.dataset.time));
+      sel.value = a.dataset.time;
+      (f.elements.namedItem('date') as HTMLInputElement).value = new Date().toISOString().slice(0, 10);
+    }
   });
   const date = document.querySelector<HTMLInputElement>('input[type="date"]');
   if (date) date.min = new Date().toISOString().slice(0, 10);

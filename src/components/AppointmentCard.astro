@@ -26,7 +26,7 @@ const { t, address, locale } = Astro.props;
       </div>
     </article>
     <div class="flex flex-wrap justify-center gap-2.5">
-      <button type="button" class="btn btn-coral" data-act="save">{t.save}</button>
+      <button type="button" class="btn btn-mint" data-act="save">{t.save}</button>
       <button type="button" class="btn btn-line" data-act="ics">{t.calendar}</button>
       <button type="button" class="btn btn-line" data-act="close">{t.close}</button>
     </div>
@@ -38,7 +38,7 @@ const { t, address, locale } = Astro.props;
   .invite::backdrop { background: rgba(12, 26, 43, .45); backdrop-filter: blur(12px); }
   .invite-stage { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 24px 16px; perspective: 1400px; }
   .invite-card { width: min(370px, 100%); border-radius: 30px; overflow: hidden; background: var(--color-paper); box-shadow: 0 50px 90px -30px rgba(12,26,43,.5); }
-  .invite-top { position: relative; overflow: hidden; padding: 24px 24px 26px; background: var(--color-coral); color: #fff; }
+  .invite-top { position: relative; overflow: hidden; padding: 24px 24px 26px; background: var(--color-mint); color: #fff; }
   .invite-mirror { position: absolute; inset-inline-end: -46px; top: -30px; width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(255,255,255,.08) 60%); box-shadow: 0 0 0 6px rgba(255,255,255,.35); }
   .invite-body { padding: 22px 24px 24px; }
   .invite-body dt { font-size: 12px; color: var(--color-slate); }

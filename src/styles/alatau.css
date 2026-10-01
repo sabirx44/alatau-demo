@@ -1,74 +1,100 @@
 /*
-  Alatau Smile identity: calm clinical light.
-  World: snow on the Alatau range above Almaty, porcelain, the dentist's round mirror.
-  Snow and glacier surfaces, deep navy ink, coral as the single action color.
+  Alatau Smile identity (fictional Almaty clinic), 2026-10 redesign.
+  World: the glacier light of the Alatau range above Almaty, porcelain, the clean breath of mint.
+  The page sits in a rounded frame like a clinic window; huge tight Geologica for the voice,
+  service strips laid across a real patient portrait, mint as the one action colour on ink and ice.
 */
 @import "tailwindcss";
-@import "@fontsource-variable/rubik/wght.css";
+@import "@fontsource-variable/geologica/wght.css";
+@import "@fontsource-variable/noto-kufi-arabic/wght.css";
 
 @theme {
-  --color-snow: #F4F7F9;
+  --color-snow: #EEF3F4;
   --color-paper: #FFFFFF;
-  --color-glacier: #D6E7F0;
-  --color-glacier-deep: #A9CADB;
-  --color-ink: #0C1A2B;
-  --color-slate: #58697B;
-  --color-coral: #E4523C;
-  --color-coral-deep: #C23E2A;
-  --color-line: rgba(12, 26, 43, 0.1);
-  --font-sans: "Rubik Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-ice: #DCE9EC;
+  --color-ice-deep: #A8C6CE;
+  --color-ink: #0E1B2B;
+  --color-slate: #566676;
+  --color-mint: #2FBF8A;
+  --color-mint-soft: #CFF1E3;
+  --color-mint-deep: #0F7D56;
+  --color-line: rgba(14, 27, 43, 0.1);
+  --font-sans: "Geologica Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 :root { color-scheme: light; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+html[dir="rtl"] { --font-sans: "Noto Kufi Arabic Variable", "Geologica Variable", sans-serif; }
 
 @layer base {
-  html { background: var(--color-snow); color: var(--color-ink); -webkit-font-smoothing: antialiased; }
-  body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; }
-  h1, h2, h3 { text-wrap: balance; font-weight: 400; }
-  :focus-visible { outline: 2px solid var(--color-coral); outline-offset: 3px; border-radius: 6px; }
-  ::selection { background: var(--color-coral); color: #fff; }
+  html { background: var(--color-snow); color: var(--color-ink); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; overflow-x: clip; }
+  body { font-family: var(--font-sans); font-size: 17px; line-height: 1.6; font-weight: 350; }
+  h1, h2, h3 { text-wrap: balance; font-weight: 500; }
+  b, strong { font-weight: 600; }
+  :focus-visible { outline: 2px solid var(--color-mint-deep); outline-offset: 3px; border-radius: 6px; }
+  ::selection { background: var(--color-mint); color: var(--color-ink); }
   img { display: block; max-width: 100%; }
 }
 
 @layer components {
-  .d-hero { font-size: clamp(50px, 7.2vw, 120px); line-height: 0.92; letter-spacing: -0.045em; font-weight: 300; }
-  .d-xl { font-size: clamp(38px, 5.4vw, 84px); line-height: 0.98; letter-spacing: -0.04em; font-weight: 300; }
-  .d-l { font-size: clamp(26px, 2.6vw, 38px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 400; }
-  html[dir="rtl"] .d-hero, html[dir="rtl"] .d-xl, html[dir="rtl"] .d-l { letter-spacing: 0; line-height: 1.15; }
-  .eyebrow { font-size: 13px; font-weight: 500; color: var(--color-slate); }
+  /* Huge, tight, confident: the Dental Health reference, in Geologica */
+  .d-hero { font-size: clamp(46px, 11.5vw, 168px); line-height: 0.86; letter-spacing: -0.06em; font-weight: 600; overflow-wrap: break-word; }
+  .d-xl { font-size: clamp(38px, 6vw, 96px); line-height: 0.92; letter-spacing: -0.05em; font-weight: 600; overflow-wrap: break-word; }
+  .d-l { font-size: clamp(24px, 2.4vw, 36px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 500; }
+  html[dir="rtl"] .d-hero, html[dir="rtl"] .d-xl, html[dir="rtl"] .d-l { letter-spacing: 0; line-height: 1.25; font-weight: 700; }
+  html[dir="rtl"] .d-hero { font-size: clamp(40px, 8vw, 120px); }
+  .eyebrow { font-size: 13px; font-weight: 500; letter-spacing: .02em; color: var(--color-slate); }
   .num { font-variant-numeric: tabular-nums; }
 
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 28px;
-    border-radius: 999px; font-weight: 500; font-size: 16px; white-space: nowrap;
-    transition: background-color .3s var(--ease), color .3s var(--ease), box-shadow .3s var(--ease);
-  }
-  .btn-coral { background: var(--color-coral); color: #fff; }
-  .btn-coral:hover { background: var(--color-coral-deep); }
-  .btn-line { box-shadow: inset 0 0 0 1.5px var(--color-line); color: var(--color-ink); background: var(--color-paper); }
-  .btn-line:hover { box-shadow: inset 0 0 0 1.5px var(--color-ink); }
-  .btn svg { width: 16px; height: 16px; }
-  html[dir="rtl"] .btn svg.dir { transform: scaleX(-1); }
+  /* The clinic window: the hero sits in a rounded frame on the ice page */
+  .frame { position: relative; border-radius: clamp(24px, 3vw, 40px); overflow: hidden; isolation: isolate; background: linear-gradient(160deg, #F7FAFA 0%, var(--color-ice) 100%); }
+
+  /* Service strips across the portrait */
+  .strip { position: relative; display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 56px; padding: 8px 18px; border-radius: 18px; background: rgba(247, 250, 250, .62); backdrop-filter: blur(10px) saturate(1.1); -webkit-backdrop-filter: blur(10px) saturate(1.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.7); color: var(--color-ink); transition: background-color .4s var(--ease); }
+  .strip b { font-size: clamp(18px, 2vw, 32px); font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; text-align: center; }
+  .strip .price { display: inline-flex; align-items: center; gap: 8px; max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; font-size: 15px; font-weight: 500; transition: max-width .6s var(--ease), opacity .4s; }
+  .strip:hover, .strip:focus-visible { background: rgba(255,255,255,.94); }
+  .strip:hover .price, .strip:focus-visible .price { max-width: 240px; opacity: 1; }
+  @media (hover: none) { .strip .price { max-width: 240px; opacity: 1; } }
+
+  /* Rotating round badge */
+  .badge { position: relative; display: grid; place-items: center; width: 132px; height: 132px; border-radius: 999px; background: var(--color-mint); color: var(--color-ink); box-shadow: 0 24px 50px -20px rgba(15,125,86,.6); transition: transform .5s var(--ease); }
+  .badge:hover { transform: scale(1.06); }
+  .badge svg.badge-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 18s linear infinite; }
+  .badge svg.arrow { width: 34px; height: 34px; transition: transform .5s var(--ease); }
+  .badge:hover svg.arrow { transform: rotate(45deg); }
+  html[dir="rtl"] .badge svg.arrow { transform: scaleX(-1); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .badge svg.badge-ring { animation: none; } }
+
+  .avatars img { width: 46px; height: 46px; border-radius: 999px; object-fit: cover; box-shadow: 0 0 0 3px var(--color-paper); }
+  .avatars > * + * { margin-inline-start: -12px; }
+
+  /* Services as an editorial price list; a photo follows the pointer on desktop */
+  .svc { position: relative; display: flex; align-items: center; gap: 16px 24px; padding: 20px 4px; border-top: 1px solid var(--color-line); transition: padding .5s var(--ease); }
+  .svc:last-child { border-bottom: 1px solid var(--color-line); }
+  .svc h3 { font-size: clamp(28px, 4.2vw, 64px); font-weight: 600; letter-spacing: -0.05em; line-height: 1; }
+  html[dir="rtl"] .svc h3 { letter-spacing: 0; line-height: 1.3; }
+  @media (hover: hover) { .svc:hover { padding-inline-start: 18px; } }
+  .svc-thumb { position: relative; width: 72px; height: 72px; border-radius: 18px; overflow: hidden; flex: none; }
+  .svc-float { position: fixed; z-index: 30; left: 0; top: 0; width: 300px; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; pointer-events: none; opacity: 0; scale: .85; transition: opacity .3s, scale .5s var(--ease); box-shadow: 0 40px 80px -30px rgba(14,27,43,.5); }
+  .svc-float.on { opacity: 1; scale: 1; }
+  .svc-float img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s; }
+  .svc-float img.on { opacity: 1; }
 
   .card { background: var(--color-paper); border-radius: 28px; overflow: hidden; position: relative; }
 
   .input {
-    height: 56px; width: 100%; padding-inline: 20px; border-radius: 16px; font: inherit; font-size: 16px;
+    min-height: 56px; width: 100%; padding-inline: 20px; border-radius: 16px; font: inherit; font-size: 16px;
     background: var(--color-snow); border: 1.5px solid transparent; color: var(--color-ink); appearance: none; transition: border-color .2s;
   }
   .input:focus { outline: none; border-color: var(--color-ink); }
-  .input[aria-invalid="true"] { border-color: var(--color-coral); }
+  .input[aria-invalid="true"] { border-color: #D64545; }
 
-  /* Dentist's mirror: a round lens on a thin handle */
-  .mirror { position: absolute; top: 0; left: 0; width: var(--m, 190px); height: var(--m, 190px); pointer-events: none; z-index: 5; will-change: transform; }
-  .mirror-lens { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 6px #E9EEF2, 0 0 0 7px rgba(12,26,43,.25), 0 30px 60px -20px rgba(12,26,43,.55); }
-  .mirror-lens img { position: absolute; max-width: none; object-fit: cover; }
-  .mirror-handle { position: absolute; width: 10px; height: 150px; left: calc(50% - 5px); top: 100%; transform-origin: 50% -95px; transform: rotate(-38deg) translateY(4px); border-radius: 6px; background: linear-gradient(90deg, #C9D3DB, #F4F7F9 45%, #9FAEBA); box-shadow: 0 10px 20px -8px rgba(12,26,43,.4); }
-  .mirror-tag { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; background: rgba(255,255,255,.9); color: var(--color-ink); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
-  .before { filter: sepia(.38) saturate(1.15) hue-rotate(-8deg) brightness(.96); }
+  .chip { display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px; font-size: 15px; font-weight: 500; background: var(--color-snow); box-shadow: inset 0 0 0 1px var(--color-line); transition: background-color .3s, color .3s; }
+  .chip:hover { background: var(--color-mint-soft); }
 
-  .photo-ph { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 12px; background: repeating-linear-gradient(135deg, transparent 0 14px, rgba(12,26,43,.04) 14px 15px), var(--color-glacier); font-size: 12px; color: var(--color-slate); }
-  .photo-ph span { background: var(--color-paper); padding: 4px 9px; border-radius: 999px; }
+  .photo-ph { position: absolute; inset: 0; background: var(--color-ice); }
+  .photo-ph span { display: none; }
 }
 
 .js [data-reveal] { opacity: 0; transform: translateY(26px); }
@@ -93,31 +119,32 @@ html.lenis, html.lenis body { height: auto; }
   html[dir="rtl"] .kbtn .ico svg { scale: -1 1; }
   html[dir="rtl"] .kbtn .ico svg + svg { transform: translateX(200%); }
   html[dir="rtl"] .kbtn:hover .ico svg:first-child { transform: translateX(-200%); }
-  .kbtn-coral { background: var(--color-coral); color: #fff; --kbtn-fill: var(--color-ink); }
-  .kbtn-coral .ico { background: #fff; color: var(--color-coral); }
+  .kbtn-mint { background: var(--color-mint); color: var(--color-ink); --kbtn-fill: var(--color-ink); }
+  .kbtn-mint:hover { color: #fff; }
+  .kbtn-mint .ico { background: var(--color-ink); color: var(--color-mint); }
   .kbtn-line { background: var(--color-paper); box-shadow: inset 0 0 0 1.5px var(--color-line); color: var(--color-ink); --kbtn-fill: var(--color-ink); }
   .kbtn-line:hover { color: #fff; }
-  .kbtn-line .ico { background: var(--color-glacier); color: var(--color-ink); }
-  .kbtn-line:hover .ico { background: var(--color-coral); color: #fff; }
-  .kbtn-ink { background: var(--color-ink); color: #fff; --kbtn-fill: var(--color-coral); }
-  .kbtn-ink .ico { background: var(--color-coral); color: #fff; }
-  .kbtn-ink:hover .ico { background: #fff; color: var(--color-coral); }
+  .kbtn-line .ico { background: var(--color-ice); color: var(--color-ink); }
+  .kbtn-line:hover .ico { background: var(--color-mint); color: var(--color-ink); }
+  .kbtn-ink { background: var(--color-ink); color: #fff; --kbtn-fill: var(--color-mint); }
+  .kbtn-ink .ico { background: var(--color-mint); color: var(--color-ink); }
+  .kbtn-ink:hover .ico { background: var(--color-ink); color: var(--color-mint); }
   .kbtn.no-ico { padding-inline: 26px; }
   .kbtn:active { transform: scale(.97); }
 
   .kcursor { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; width: 0; height: 0; opacity: 0; transition: opacity .3s; }
   .kcursor.on { opacity: 1; }
-  .kcursor-dot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-ink); transition: transform .45s var(--ease), background-color .3s, opacity .3s; }
-  .kcursor.grow .kcursor-dot { transform: scale(3.2); opacity: .15; }
-  .kcursor.text .kcursor-dot { transform: scale(7.5); background: var(--color-coral); opacity: 1; }
-  .kcursor-label { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; opacity: 0; transition: opacity .25s; }
+  .kcursor-dot { position: absolute; left: 0; top: 0; width: var(--d, 12px); height: var(--d, 12px); transform: translate(-50%, -50%); border-radius: 999px; background: var(--color-ink); transition: width .45s var(--ease), height .45s var(--ease), border-radius .45s var(--ease), transform .45s var(--ease), background-color .3s, opacity .3s; }
+  .kcursor.grow .kcursor-dot { --d: 38px; opacity: .15; }
+  .kcursor.text .kcursor-dot { width: var(--lw, 88px); height: 42px; background: var(--color-ink); opacity: 1; }
+  .kcursor-label { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); z-index: 1; font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; opacity: 0; transition: opacity .25s; }
   .kcursor.text .kcursor-label { opacity: 1; }
   html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }
   html.has-cursor [data-mirror-area] { cursor: none; }
 
   .kmarquee { overflow: hidden; white-space: nowrap; }
   .kmarquee [data-marquee-track] { display: inline-flex; will-change: transform; }
-  .kprogress { position: fixed; inset-inline: 0; top: 0; height: 2px; z-index: 60; transform: scaleX(0); transform-origin: left; background: var(--color-coral); }
+  .kprogress { position: fixed; inset-inline: 0; top: 0; height: 2px; z-index: 60; transform: scaleX(0); transform-origin: left; background: var(--color-mint); }
   html[dir="rtl"] .kprogress { transform-origin: right; }
   @media (hover: none) { .press:active { transform: scale(.97); transition: transform .15s; } }
 }
@@ -126,3 +153,38 @@ html:not(.js) .kpre { display: none; }
 
 /* A button label may shrink and wrap next to its icon instead of pushing out of the button */
 .kbtn > span:not(.ico) { min-width: 0; }
+
+:root { --dd-bg: #fff; --dd-fg: var(--color-ink); --dd-hover: var(--color-snow); --dd-accent: var(--color-mint); --dd-line: var(--color-line); --dd-shadow: 0 24px 60px -24px rgba(14,27,43,.3); }
+@layer components {
+  /* Designed dropdowns (tools/kit/dropdown.ts). Site colours come from the --dd-* variables above. */
+  .dd-btn { display: inline-flex; align-items: center; justify-content: space-between; gap: .5em; text-align: start; cursor: pointer; }
+  .dd-btn .dd-val { min-width: 0; overflow-wrap: anywhere; line-height: 1.2; }
+  .dd-btn.dd-placeholder .dd-val { opacity: .7; }
+  .dd-chev { width: 14px; height: 14px; flex: none; opacity: .75; transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+  .dd-btn[aria-expanded="true"] .dd-chev { transform: rotate(180deg); }
+  .dd-list { position: fixed; z-index: 200; margin: 0; padding: 6px; list-style: none; overflow: auto; overscroll-behavior: contain; background: var(--dd-bg); color: var(--dd-fg); border-radius: var(--dd-radius, 16px); border: 1px solid var(--dd-line); box-shadow: var(--dd-shadow); opacity: 0; transform: translateY(-6px) scale(.98); transform-origin: top center; transition: opacity .18s ease, transform .24s cubic-bezier(.22, 1, .36, 1); scrollbar-width: thin; }
+  .dd-list.dd-up { transform: translateY(6px) scale(.98); transform-origin: bottom center; }
+  .dd-list.dd-open { opacity: 1; transform: none; }
+  .dd-opt { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding: 8px 12px; border-radius: calc(var(--dd-radius, 16px) - 6px); font-size: 15px; font-weight: 600; line-height: 1.25; cursor: pointer; outline: none; transition: background-color .15s; }
+  .dd-opt:hover, .dd-opt:focus-visible, .dd-opt:focus { background: var(--dd-hover); }
+  .dd-opt[aria-selected="true"] { color: var(--dd-accent); }
+  .dd-tick { width: 16px; height: 16px; flex: none; opacity: 0; }
+  .dd-opt[aria-selected="true"] .dd-tick { opacity: 1; }
+  .dd-opt[aria-disabled="true"] { opacity: .4; cursor: default; }
+  @media (prefers-reduced-motion: reduce) { .dd-list { transition: none; } }
+}
+
+.al-draw path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: al-draw 1.4s var(--ease) forwards; }
+.al-draw path + path { animation-delay: .8s; animation-duration: .6s; }
+@keyframes al-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .al-draw path { animation: none; stroke-dashoffset: 0; } }
+
+/* Hero: the portrait melts into the frame instead of ending in a hard edge; the headline is sized to stop short of the smile */
+@media (min-width: 1024px) {
+  .hero-fade { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%); mask-image: linear-gradient(to right, transparent 0, #000 22%); }
+  html[dir="rtl"] .hero-fade { -webkit-mask-image: linear-gradient(to left, transparent 0, #000 22%); mask-image: linear-gradient(to left, transparent 0, #000 22%); }
+  .hero-h1 { font-size: clamp(64px, 8.4vw, 136px); }
+}
+@media (max-width: 1023px) { .strip { background: var(--color-paper); box-shadow: 0 1px 0 rgba(14,27,43,.06); } .strip b { font-size: 19px; } }
+/* A centred button keeps a wrapped label centred too */
+.kbtn.no-ico { text-align: center; }

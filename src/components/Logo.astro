@@ -1,0 +1,10 @@
+---
+// Alatau Smile mark: a tooth whose crown is the Alatau ridge, two snow peaks over Almaty.
+// One stroke in the text colour, the snow line in mint. pathLength=1 lets the intro draw it.
+interface Props { class?: string; draw?: boolean }
+const { class: cls = '', draw = false } = Astro.props;
+---
+<svg viewBox="0 0 32 32" class:list={['block', cls, draw && 'al-draw']} fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M7.4 12.6 L11.8 6.2 L15.7 10.6 L20.4 5 L24.7 12.6 C25.5 16.2 24.3 19.2 23.1 21.6 L21.7 27 C21.3 28.4 19.7 28.4 19.3 27 L17.7 21.6 C17.3 20.1 14.8 20.1 14.4 21.6 L12.8 27 C12.4 28.4 10.8 28.4 10.4 27 L9 21.6 C7.8 19.2 6.6 16.2 7.4 12.6 Z" stroke="currentColor" stroke-width="1.9" pathLength="1" />
+  <path d="M10.2 8.6 L11.8 6.2 L13.6 8.3 M18.6 7.3 L20.4 5 L22.3 8" stroke="var(--color-mint)" stroke-width="1.9" pathLength="1" />
+</svg>
