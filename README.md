@@ -1,19 +1,32 @@
-# Alatau Smile (demo)
+# Alatau Smile: dental clinic site
 
-Dental clinic demo for Esanov: a fictional clinic in Almaty.
+![Alatau Smile](public/og.jpg)
 
-- Five languages with their own URLs: Russian `/`, Uzbek `/uz/`, Kazakh `/kk/`, English `/en/`, Arabic `/ar/` (right-to-left)
-- Hero "dentist's mirror": a round lens that follows the cursor (or drifts on its own) and shows the smile after whitening inside the lens
-- Service cards with photos and prices, doctor cards with next free slot and languages spoken
-- Tappable tooth chart (FDI numbering, mirror view) that feeds the booking form
-- Booking ends in an appointment card with a QR code, saved as an image or added to the calendar
+**Live:** https://alatau-demo.pages.dev
 
-Identity: snow and glacier surfaces, deep navy ink, coral as the only action color, the Alatau ridge line, Rubik for every script.
+Demo site for a fictional dental clinic in Almaty, Kazakhstan. The whole site sits in a rounded "clinic window" frame. Doctors, prices and reviews are illustrative.
 
-Photos go in `src/assets/img/` (prompt list: studio repo `scripts/jobs/dental.json`). Native-speaker check needed for Uzbek, Kazakh and Arabic.
+## Features
+
+- Five languages with their own URLs, including Arabic laid out right to left
+- Hero with service strips laid over a patient portrait, rotating "Book online" badge, patient avatars
+- Editorial price list with a photo preview that follows the pointer
+- Doctor carousel with swipe, thumbnails and each doctor's next free slots
+- Booking that ends in an appointment card saved to the phone
+- Logo (tooth and mountain peaks) that draws itself in the preloader
+
+## Stack
+
+Astro · TypeScript · Tailwind CSS · GSAP · Lenis · Cloudflare Pages
+
+Built with an AI-assisted workflow; every page passes an automated layout audit (Puppeteer) at five screen widths and in every language before deploy.
+
+## Run
 
 ```bash
 npm install
 npm run dev
-node scripts/shoot.mjs http://localhost:4350/ ru
+npm run build
 ```
+
+Made by [Sabir Hussein](https://sabr-studio.pages.dev).
